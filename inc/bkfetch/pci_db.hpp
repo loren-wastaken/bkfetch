@@ -2,8 +2,12 @@
 
 #include <cstdint>
 #include <string>
+#include <utility>
+#include <vector>
 
 namespace bkfetch {
+
+std::vector<std::pair<std::uint16_t, std::uint16_t>> getAllPCIDevices();
 
 struct PCIDevice {
     std::string vendor;
