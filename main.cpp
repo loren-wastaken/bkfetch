@@ -9,6 +9,12 @@
 #include <bkfetch/desktop.hpp>
 #include <bkfetch/uptime.hpp>
 #include <bkfetch/battery.hpp>
+#include <bkfetch/logo.hpp>
+
+#include <algorithm>
+#include <iomanip>
+#include <sstream>
+#include <vector>
 
 #include <iostream>
 #include <string>
@@ -44,38 +50,45 @@ int main() {
     const bool uptimeOK = bkfetch::getUptime(uptime);
     const bool batteryOK = bkfetch::getBattery(battery);
 
-    std::cout << "=== bkfetch ===\n\n";
+const auto& logo = bkfetch::getLogo();
 
-    std::cout
-        << (usernameOK ? username : "unknown")
-        << "@"
-        << (hostnameOK ? hostname : "unknown")
-        << "\n\n";
+    std::vector<std::string> info = {
+        "=== bkfetch ===",
+        "",
+        (usernameOK ? username : "unknown") + "@" +
+            (hostnameOK ? hostname : "unknown"),
+        "",
+        "OS: " + (osOK ? os : "N/A"),
+        "Kernel: " + (kernelOK ? kernel : "N/A"),
+        "CPU: " + (cpuOK ? cpu : "N/A"),
+        "GPU: " + (gpuOK ? gpu : "N/A"),
+        "RAM: " + (ramOK ? ram : "N/A")
+    };
 
-    std::cout << "OS: " << (osOK ? os : "N/A") << '\n';
-    std::cout << "Kernel: " << (kernelOK ? kernel : "N/A") << '\n';
-    std::cout << "CPU: " << (cpuOK ? cpu : "N/A") << '\n';
-    std::cout << "GPU: " << (gpuOK ? gpu : "N/A") << '\n';
-    std::cout << "RAM: " << (ramOK ? ram : "N/A") << '\n';
     if (diskOK) {
         for (const auto& disk : disks) {
-            std::cout << "Disk (" << disk.mountPoint << "): "
-                    << disk.usage << '\n';
+            info.push_back(
+                "Disk (" + disk.mountPoint + "): " + disk.usage
+            );
         }
     } else {
-        std::cout << "Disk: N/A\n";
+        info.push_back("Disk: N/A");
     }
-    std::cout << "Shell: " << (shellOK ? shell : "N/A") << '\n';
-    std::cout << "DE/WM: " << (desktopOK ? desktop : "Not detected") << '\n';
-    std::cout << "Uptime: " << (uptimeOK ? uptime : "N/A") << '\n';
-    std::cout << "Battery: " << (batteryOK ? battery : "Not detected") << '\n';
 
-    return (
-        cpuOK &&
-        gpuOK &&
-        ramOK &&
-        osOK &&
-        kernelOK &&
-        diskOK
-    ) ? 0 : 1;
+    info.push_back("Shell: " + (shellOK ? shell : "N/A"));
+    info.push_back("DE/WM: " + (desktopOK ? desktop : "Not detected"));
+    info.push_back("Uptime: " + (uptimeOK ? uptime : "N/A"));
+    info.push_back("Battery: " + (batteryOK ? battery : "Not detected"));
+
+    std::cout << '\n';
+
+    const std::size_t lines = std::max(logo.size(), info.size());
+
+    for (std::size_t i = 0; i < lines; ++i) {
+        const std::string left = i < logo.size() ? logo[i] : "";
+
+        const std::string right = i < info.size() ? info[i] : "";
+
+        std::cout << left << "   " << right << '\n';
+    }
 }

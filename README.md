@@ -17,4 +17,7 @@ de/wm
 uptime
 and battery if detected
 
+# Gallery
+![Photo showcasing how the tool looks like!](.readmeassets/bkfetch_showcase1.png)
+
 ### Licensed [MIT](LICENSE)
