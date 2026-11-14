@@ -7,14 +7,23 @@ It displays:
 Hostname
 
 OS (Distro)
+
 Kernel version
+
 cpu
+
 gpu
+
 ram used/max
+
 disk(/) and more if you have more disks.
+
 shell
+
 de/wm
+
 uptime
+
 and battery if detected
 
 # Gallery
